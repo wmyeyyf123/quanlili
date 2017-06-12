@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none
+        }
+        
+        ul li {
+            width: 500px;
+            line-height: 30px;
+            background: pink;
+            color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+        
+        ol li {
+            background: #ccc;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            color: #000;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+        }
+        
+        ul span {
+            margin-right: 10px;
+            font-size: 12px;
+            color: #000;
+            float: right
+        }
+        
+        button {
+            margin-top: 5px;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text">
+        <ul>
+            <%for(var i=0;i<data.length;i++){%>
+                <li data-id="<%=data[i].no%>">
+                    <%=data[i].title%><button data-type="<%=data[i].no%>" class='btn'>删除</button><span>点击次数：<b><%=data[i].count%></b></span>
+                </li>
+
+                <%}%>
+        </ul>
+        <ol>
+            <%for(var j=1;j<=page;j++){%>
+                <li>
+                    <%= j %>
+                </li>
+                <%}%>
+        </ol>
+        <p>该网页浏览次数为：<span id="count"></span></p>
+    </div>
+</body>
+<script src="angular.min.js"></script>
+<script src="angular-ui-router.min.js"></script>
+<script src="./jquery-1.8.3.min.js"></script>
+<script>
+    if (localStorage.count == "undefined") {
+        localStorage.count = 1;
+    } else {
+        localStorage.count++;
+    }
+    console.log(localStorage.count)
+    $("#count").text(localStorage.count);
+    $("ol li").on("click", function() {
+        var ind = $(this).text().replace(/\s+/, '') * 1;
+        $.ajax({
+            "url": '/update',
+            "type": "post",
+            "data": {
+                "index": ind
+            },
+            "success": function(data) {
+                // console.log(data)
+                // console.log(data.code)
+                // if (data.code == 0) {
+                //     window.location.reload();
+                // }
+            }
+        })
+
+    })
+    $("ul li").on('click', function() {
+        var id = $(this).attr("data-id");
+        console.log(id);
+        location.href = "/product?id=" + id;
+
+    })
+    $(".btn").on("click", function() {
+        var id = $(this).attr("data-type");
+        $.ajax({
+            "url": "/delete",
+            "type": "post",
+            "data": {
+                "id": id
+            },
+            "success": function(data) {
+                console.log(data)
+                if (data.code == 0) {
+                    window.location.reload();
+                }
+            }
+        })
+    })
+</script>
+
+
+</html>

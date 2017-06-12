@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        #txt-box {
+            width: 400px;
+            height: 300px;
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>详情页:被访问了<b id="count"> <%=data.count%></b></h3>
+    <h1>
+        <%=data.title%>
+    </h1>
+    <p id="txt-box" contenteditable="true">
+        <%=data.cont%>
+    </p>
+    <button id="button" type="">back</button>
+    <button id="add" data-id="<%=data.no%>">add</button>
+</body>
+<script src=" ./jquery-1.8.3.min.js "></script>
+
+
+<script>
+    var count = $("#count").text().trim();
+    count++;
+    $("#button ").on("click ", function() {
+        var count = $("#count").text().trim();
+        location.href = "/?count=" + count;
+    })
+    $("#add").on("click", function() {
+        var id = $(this).attr("data-id");
+        var text = $("#txt-box").text().trim();
+        $.ajax({
+            url: "/insert",
+            type: "post",
+            data: {
+                id: id,
+                text: text,
+                count: count
+            },
+            success: function(data) {
+                console.log(data.code)
+            }
+        })
+    })
+</script>
+
+</html>
